@@ -752,83 +752,50 @@ if (typeof window !== "undefined") {
     document.body.style.transition = 'opacity 200ms ease';
   });
 </script>
- <script>
-  (function () {
-    function fixGetInTouchLinks() {
-      // 1. Убираем framer.link редиректы (типа kanishkdubey)
-      document.querySelectorAll('a[href^="https://framer.link/"]').forEach(a => {
-        a.setAttribute('href', './contact');
-        a.removeAttribute('target');
-        a.removeAttribute('rel');
-      });
+<script>
+(function () {
+  const CONTACT_URL = "/contact";
+  const BAD = "https://framer.link/kanishkdubey";
 
-      // 2. Убираем жёсткие ссылки на framer.website/contact
-      document.querySelectorAll('a[href*="framer.website/contact"]').forEach(a => {
-        a.setAttribute('href', './contact');
-        a.removeAttribute('target');
-        a.removeAttribute('rel');
-      });
+  function patchLinks(root = document) {
+    root.querySelectorAll(`a[href="${BAD}"], a[href^="https://framer.link/"]`).forEach(a => {
+      // Подменяем атрибут
+      a.setAttribute("href", CONTACT_URL);
+      a.removeAttribute("target");
+      a.removeAttribute("rel");
+      // На всякий случай: подменяем и свойство (иногда Framer работает через него)
+      try { a.href = new URL(CONTACT_URL, location.origin).toString(); } catch(e) {}
+      // Помечаем, чтобы видеть, что патч сработал
+      a.dataset.patchedContact = "1";
+    });
+  }
+
+  // 1) Сразу пробуем
+  patchLinks();
+
+  // 2) Перехватываем клики: даже если Framer вернёт BAD обратно — мы уводим на /contact
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("a");
+    if (!a) return;
+
+    const hrefAttr = a.getAttribute("href") || "";
+    const hrefProp = (a.href || "");
+
+    if (hrefAttr.includes("framer.link") || hrefProp.includes("framer.link") || hrefAttr === CONTACT_URL) {
+      e.preventDefault();
+      window.location.assign(CONTACT_URL);
     }
+  }, true);
 
-    // первый проход
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', fixGetInTouchLinks);
-    } else {
-      fixGetInTouchLinks();
-    }
+  // 3) Следим за DOM: Framer может пересоздавать кнопку после загрузки
+  const obs = new MutationObserver(() => patchLinks());
+  obs.observe(document.documentElement, { childList: true, subtree: true });
 
-    // повторные проходы — Framer иногда подменяет DOM позже
-    setTimeout(fixGetInTouchLinks, 500);
-    setTimeout(fixGetInTouchLinks, 1500);
-  })();
+  // 4) И ещё пара повторов на всякий случай
+  setTimeout(patchLinks, 300);
+  setTimeout(patchLinks, 1200);
+})();
 </script>
 
- <script>
-  (function () {
-    function fixBadGetInTouch() {
-      document.querySelectorAll('a[href^="https://framer.link/"]').forEach(a => {
-        const href = a.getAttribute('href') || '';
-        if (!href.includes('kanishkdubey')) return;
-
-        a.setAttribute('href', './contact');
-        a.removeAttribute('target');
-        a.removeAttribute('rel');
-      });
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', fixBadGetInTouch);
-    } else {
-      fixBadGetInTouch();
-    }
-
-    setTimeout(fixBadGetInTouch, 500);
-    setTimeout(fixBadGetInTouch, 1500);
-  })();
-</script>
-
- <script>
-  (function () {
-    function fixGetInTouchToContactPage() {
-      // Меняем только редиректы framer.link (типа kanishkdubey) на нормальный роут
-      document.querySelectorAll('a[href^="https://framer.link/"]').forEach(a => {
-        a.setAttribute('href', '/contact');
-        a.removeAttribute('target');
-        a.removeAttribute('rel');
-      });
-    }
-
-    // первый запуск
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', fixGetInTouchToContactPage);
-    } else {
-      fixGetInTouchToContactPage();
-    }
-
-    // на всякий случай, если Framer обновит DOM позже
-    setTimeout(fixGetInTouchToContactPage, 500);
-    setTimeout(fixGetInTouchToContactPage, 1500);
-  })();
-</script>
 
 </body></html>
