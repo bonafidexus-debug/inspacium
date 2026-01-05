@@ -807,4 +807,28 @@ if (typeof window !== "undefined") {
   })();
 </script>
 
+ <script>
+  (function () {
+    function fixGetInTouchToContactPage() {
+      // Меняем только редиректы framer.link (типа kanishkdubey) на нормальный роут
+      document.querySelectorAll('a[href^="https://framer.link/"]').forEach(a => {
+        a.setAttribute('href', '/contact');
+        a.removeAttribute('target');
+        a.removeAttribute('rel');
+      });
+    }
+
+    // первый запуск
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fixGetInTouchToContactPage);
+    } else {
+      fixGetInTouchToContactPage();
+    }
+
+    // на всякий случай, если Framer обновит DOM позже
+    setTimeout(fixGetInTouchToContactPage, 500);
+    setTimeout(fixGetInTouchToContactPage, 1500);
+  })();
+</script>
+
 </body></html>
