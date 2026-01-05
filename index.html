@@ -752,4 +752,35 @@ if (typeof window !== "undefined") {
     document.body.style.transition = 'opacity 200ms ease';
   });
 </script>
+ <script>
+  (function () {
+    function fixGetInTouchLinks() {
+      // 1. Убираем framer.link редиректы (типа kanishkdubey)
+      document.querySelectorAll('a[href^="https://framer.link/"]').forEach(a => {
+        a.setAttribute('href', './contact');
+        a.removeAttribute('target');
+        a.removeAttribute('rel');
+      });
+
+      // 2. Убираем жёсткие ссылки на framer.website/contact
+      document.querySelectorAll('a[href*="framer.website/contact"]').forEach(a => {
+        a.setAttribute('href', './contact');
+        a.removeAttribute('target');
+        a.removeAttribute('rel');
+      });
+    }
+
+    // первый проход
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fixGetInTouchLinks);
+    } else {
+      fixGetInTouchLinks();
+    }
+
+    // повторные проходы — Framer иногда подменяет DOM позже
+    setTimeout(fixGetInTouchLinks, 500);
+    setTimeout(fixGetInTouchLinks, 1500);
+  })();
+</script>
+
 </body></html>
