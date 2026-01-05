@@ -783,4 +783,28 @@ if (typeof window !== "undefined") {
   })();
 </script>
 
+ <script>
+  (function () {
+    function fixBadGetInTouch() {
+      document.querySelectorAll('a[href^="https://framer.link/"]').forEach(a => {
+        const href = a.getAttribute('href') || '';
+        if (!href.includes('kanishkdubey')) return;
+
+        a.setAttribute('href', './contact');
+        a.removeAttribute('target');
+        a.removeAttribute('rel');
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fixBadGetInTouch);
+    } else {
+      fixBadGetInTouch();
+    }
+
+    setTimeout(fixBadGetInTouch, 500);
+    setTimeout(fixBadGetInTouch, 1500);
+  })();
+</script>
+
 </body></html>
