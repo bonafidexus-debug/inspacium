@@ -64,7 +64,19 @@
             z-index: calc(var(--infinity, 2147483647));
         }
         
-    /* Hide Framer badge (safe) */
+    /* Hide Framer editor pencil/overlay (safe, brute-force) */
+a[href*="framer.com/edit"],
+a[href*="framer.com"],
+iframe[src*="framer.com"],
+[data-framer-editor],
+[data-framer-overlay],
+[data-framer-toolbar] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+        /* Hide Framer badge (safe) */
 #__framer-badge-container { display: none !important; }
 </style>
     <style data-framer-font-css="">/* latin-ext */
