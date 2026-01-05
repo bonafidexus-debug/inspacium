@@ -64,7 +64,16 @@
             z-index: calc(var(--infinity, 2147483647));
         }
         
-    /* Hide Framer editor pencil/overlay (safe, brute-force) */
+    /* Kill Framer editorbar (pencil) */
+#__framer-editorbar-container,
+iframe#__framer-editorbar,
+#__framer-editorbar-button {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+        /* Hide Framer editor pencil/overlay (safe, brute-force) */
 a[href*="framer.com/edit"],
 a[href*="framer.com"],
 iframe[src*="framer.com"],
